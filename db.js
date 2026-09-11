@@ -65,110 +65,6 @@ function emptyState() {
   };
 }
 
-function seedData() {
-  const s = emptyState();
-
-  const cari = (unvan, kategori, pBirim, yetkili, telefon) => {
-    s.seq.cari += 1;
-    const id = 'c' + s.seq.cari;
-    s.cariler.push({
-      id, kod: pad(s.seq.cari), unvan, kategori, pBirim,
-      yetkili: yetkili || '', gsm: '', telefon: telefon || '', faks: '',
-      adres: '', il: '', ilce: '', riskLimiti: 0, aktif: true,
-      notlar: '', createdAt: todayISO(),
-    });
-    return id;
-  };
-
-  const kasa = (kasaAdi, pBirim) => {
-    s.seq.kasa += 1;
-    const id = 'k' + s.seq.kasa;
-    s.kasalar.push({ id, kod: pad(s.seq.kasa), kasaAdi, pBirim, aktif: true });
-    return id;
-  };
-
-  const banka = (bankaAdi, hesapAdi, iban, pBirim) => {
-    s.seq.banka += 1;
-    const id = 'b' + s.seq.banka;
-    s.bankalar.push({ id, kod: pad(s.seq.banka), bankaAdi, hesapAdi, ibanNo: iban, pBirim, aktif: true });
-    return id;
-  };
-
-  const kasa1 = kasa('KASA 1', 'TL');
-  const kasa2 = kasa('KASA 2', 'USD');
-  kasa('KASA 3', 'EUR');
-  banka('Ziraat Bankası', 'Şirket Hesabı', 'TR00 0000 0000 0000 0000 0000 00', 'TL');
-
-  const c1 = cari('YILDIZ ELEKTRONİK SAN. VE TİC. LTD. ŞTİ.', 'Müşteri', 'TL', 'Ayşe Yıldız', '0212 555 10 10');
-  const c2 = cari('AKSOY MEDİKAL SAN. VE TİC. LTD. ŞTİ.', 'Tedarikçi', 'USD', 'Kemal Aksoy', '0216 555 20 20');
-  const c3 = cari('MURAT ÖZTÜRK', 'Müşteri', 'EUR', '', '0532 555 30 30');
-  cari('SEDA KAYA', 'Müşteri', 'TL', '', '');
-  const c5 = cari('BURAK ŞAHİN', 'Personel', 'TL', '', '');
-
-  function hareket(cariId, gun, tur, aciklama, tutar, pBirim, ozelKod) {
-    s.seq.islem += 1;
-    s.cariHareketler.push({
-      id: 'h' + s.seq.islem, cariId, islemNo: pad(s.seq.islem),
-      tarih: gun, saat: '10:00:00', tur, aciklama, tutar, pBirim: pBirim,
-      ozelKod: ozelKod || '',
-    });
-  }
-
-  hareket(c1, '2026-01-15', 'Açılış Borç', 'Devir Bakiye', 5000, 'TL');
-  hareket(c1, '2026-02-10', 'Borç', '25x350,00 Satılan Ürünler', 8750, 'TL');
-  hareket(c1, '2026-03-19', 'Nakit Tahsilat', 'Tahsilat > KASA 1', -7250, 'TL');
-
-  hareket(c2, '2026-01-02', 'Alacak', '40x400,00 Alınan Ürünler', -16000, 'USD');
-  hareket(c2, '2026-02-06', 'K.Kartı ile Ödeme', 'Kredi Kartı ile Ödeme', 3450, 'USD');
-  hareket(c2, '2026-02-24', 'Gönderilen Havale/EFT', 'Havale - Ziraat Bankası', 2000, 'USD');
-  hareket(c2, '2026-03-18', 'Nakit Ödeme', 'Nakit Yapılan Ödeme > KASA 2', 1500, 'USD');
-
-  hareket(c3, '2026-02-15', 'Açılış Alacak', 'Devir Bakiye', -1240, 'EUR');
-  hareket(c3, '2026-03-15', 'Borç', '10x600,00 Satılan Ürünler', 6000, 'EUR');
-
-  hareket(c5, '2026-02-20', 'Borç', 'Avans Ödemesi', 4000, 'TL');
-
-  // Kasa hareketleri (kısmen cari hareketlerden bağımsız demo)
-  function kasaHareket(kasaId, gun, tur, aciklama, tutar, cariId) {
-    s.kasaHareketleri.push({
-      id: 'kh' + (s.kasaHareketleri.length + 1), kasaId, tarih: gun, tur, aciklama, tutar, cariId: cariId || null,
-    });
-  }
-  kasaHareket(kasa1, '2026-01-01', 'Gelir', 'Açılış Bakiyesi', 30000);
-  kasaHareket(kasa1, '2026-03-19', 'Gelir', 'Tahsilat - YILDIZ ELEKTRONİK', 7250, c1);
-  kasaHareket(kasa2, '2026-01-01', 'Gelir', 'Açılış Bakiyesi', 2800);
-  kasaHareket(kasa2, '2026-03-18', 'Gider', 'Ödeme - AKSOY MEDİKAL', 1500, c2);
-
-  s.hatirlatmalar.push({
-    id: 'r1', cariId: c2, tur: 'Verilen Çek', aciklama: 'Halk Bankası', vade: '2026-10-26',
-    tutar: 1500, pBirim: 'USD', durum: 'Bekliyor',
-  });
-  s.hatirlatmalar.push({
-    id: 'r2', cariId: c1, tur: 'Alınan Çek', aciklama: 'Garanti Bankası', vade: '2026-09-05',
-    tutar: 4000, pBirim: 'TL', durum: 'Bekliyor',
-  });
-
-  function varlik(ad, kategori, durum, alisTarihi, alisDegeri, guncelDeger, pBirim) {
-    s.seq.varlik += 1;
-    s.varliklar.push({
-      id: 'v' + s.seq.varlik, kod: pad(s.seq.varlik), ad, kategori, durum,
-      alisTarihi, alisDegeri, guncelDeger, pBirim: pBirim || 'TL',
-      satisTarihi: null, satisDegeri: null, aciklama: '',
-    });
-  }
-  varlik('Ofis Bilgisayarı (x3)', 'Demirbaş', 'Aktif', '2025-06-10', 60000, 48000, 'TL');
-  varlik('Şirket Aracı - Ford Transit', 'Araç', 'Aktif', '2024-03-01', 950000, 1100000, 'TL');
-  varlik('Depo Rafları', 'Demirbaş', 'Pasif', '2023-01-15', 25000, 15000, 'TL');
-  s.seq.varlik += 1;
-  s.varliklar.push({
-    id: 'v' + s.seq.varlik, kod: pad(s.seq.varlik), ad: 'Eski Yazıcı', kategori: 'Demirbaş', durum: 'Satıldı',
-    alisTarihi: '2022-05-01', alisDegeri: 8000, guncelDeger: 8000, pBirim: 'TL',
-    satisTarihi: '2026-02-10', satisDegeri: 2500, aciklama: '',
-  });
-
-  return s;
-}
-
 let state = null;
 
 function load() {
@@ -181,7 +77,7 @@ function load() {
     if (state.seq.varlik === undefined) { state.seq.varlik = 0; migrated = true; }
     if (migrated) save();
   } catch (e) {
-    state = seedData();
+    state = emptyState();
     save();
   }
   return state;

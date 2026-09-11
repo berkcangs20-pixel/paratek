@@ -1,7 +1,7 @@
 {
   "name": "paratek",
   "productName": "Paratek",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Paratek - Cari Hesap, Kasa, Banka ve Hatirlatma Takip Programi",
   "main": "main.js",
   "author": "Furkan",
