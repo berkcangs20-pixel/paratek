@@ -14,6 +14,7 @@ const methods = [
   'listKategoriler', 'addKategori', 'renameKategori', 'deleteKategori',
   'listAciklamalar', 'addAciklama', 'updateFirma',
   'backupData', 'restoreData', 'restartApp', 'getAppVersion',
+  'checkForUpdates', 'downloadUpdate', 'installUpdate',
   'getDovizKurlari', 'updateDovizKurlari', 'fetchLiveDovizKurlari',
 ];
 
@@ -22,6 +23,8 @@ for (const m of methods) {
   api[m] = (...args) => ipcRenderer.invoke(m, ...args);
 }
 api.onNavigateHatirlatmalar = (cb) => ipcRenderer.on('navigate-hatirlatmalar', () => cb());
+api.onUpdateDownloadProgress = (cb) => ipcRenderer.on('update-download-progress', (event, percent) => cb(percent));
+api.onUpdateDownloaded = (cb) => ipcRenderer.on('update-downloaded', () => cb());
 
 contextBridge.exposeInMainWorld('api', api);
 

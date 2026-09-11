@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 const db = require('./db');
@@ -6,6 +7,9 @@ const auth = require('./auth');
 const settings = require('./settings');
 const license = require('./license');
 const { DATA_DIR } = require('./dataDir');
+
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = false;
 
 let win;
 
@@ -191,6 +195,35 @@ ipcMain.handle('getAppVersion', () => app.getVersion());
 ipcMain.handle('restartApp', () => {
   app.relaunch();
   app.exit(0);
+});
+
+// Güncelleme (GitHub Releases üzerinden)
+ipcMain.handle('checkForUpdates', async () => {
+  if (!app.isPackaged) return { updateAvailable: false, dev: true };
+  try {
+    const result = await autoUpdater.checkForUpdates();
+    const latestVersion = result && result.updateInfo && result.updateInfo.version;
+    const updateAvailable = !!latestVersion && latestVersion !== app.getVersion();
+    return { updateAvailable, version: latestVersion };
+  } catch (e) {
+    return { updateAvailable: false, error: e && e.message };
+  }
+});
+
+ipcMain.handle('downloadUpdate', async () => {
+  await autoUpdater.downloadUpdate();
+  return true;
+});
+
+ipcMain.handle('installUpdate', () => {
+  autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on('download-progress', (progress) => {
+  if (win) win.webContents.send('update-download-progress', progress.percent);
+});
+autoUpdater.on('update-downloaded', () => {
+  if (win) win.webContents.send('update-downloaded');
 });
 
 // Tüm db.js fonksiyonlarını IPC üzerinden expose et

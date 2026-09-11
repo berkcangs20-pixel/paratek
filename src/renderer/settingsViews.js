@@ -1,5 +1,5 @@
 import { iconEl } from './icons.js';
-import { openModal, closeModal, toast, toastSuccess, confirmDialog, field, row, btn } from './ui.js';
+import { openModal, closeModal, toast, toastSuccess, confirmDialog, withErrorToast, field, row, btn } from './ui.js';
 import { applyTheme, ACCENT_LIST } from './theme.js';
 
 const ACCENT_COLORS = { green: '#3fae6e', blue: '#3d8bd9', pink: '#d94f8f', orange: '#e08a3c' };
@@ -143,11 +143,32 @@ export async function openGuncelleme() {
   checkSection.className = 'yedek-section';
   checkSection.innerHTML = `
     <div class="yedek-title"><b>Güncellemeleri Kontrol Et</b></div>
-    <div class="yedek-desc">Bu kurulum için henüz otomatik bir güncelleme kaynağı tanımlanmadı. Yeni bir sürüm çıktığında yeniden paketlenip elden iletilecektir.</div>
+    <div class="yedek-desc">Yayınlanan en güncel sürüm kontrol edilir.</div>
   `;
   const checkBtn = btn('Güncellemeleri Kontrol Et', 'primary', 'refresh');
-  checkBtn.onclick = () => toast(`Şu anda en güncel sürümü kullanıyorsunuz (v${version}).`);
-  checkSection.appendChild(checkBtn);
+  const statusLine = document.createElement('div');
+  statusLine.className = 'yedek-desc';
+  statusLine.style.display = 'none';
+  checkBtn.onclick = () => withErrorToast(async () => {
+    checkBtn.disabled = true;
+    const result = await window.api.checkForUpdates();
+    checkBtn.disabled = false;
+    if (result.dev) { toast('Geliştirme modunda güncelleme kontrolü yapılamaz.'); return; }
+    if (result.error) { toast('Kontrol edilemedi: ' + result.error); return; }
+    if (!result.updateAvailable) { toast(`Şu anda en güncel sürümü kullanıyorsunuz (v${version}).`); return; }
+
+    statusLine.style.display = 'block';
+    statusLine.textContent = `Yeni sürüm bulundu: v${result.version}. İndiriliyor...`;
+    const onProgress = (percent) => { statusLine.textContent = `v${result.version} indiriliyor... %${Math.round(percent)}`; };
+    window.api.onUpdateDownloadProgress(onProgress);
+    window.api.onUpdateDownloaded(async () => {
+      statusLine.textContent = `v${result.version} indirildi.`;
+      const ok = await confirmDialog('Güncelleme indirildi. Şimdi yeniden başlatılıp kurulsun mu?');
+      if (ok) window.api.installUpdate();
+    });
+    await window.api.downloadUpdate();
+  });
+  checkSection.append(checkBtn, statusLine);
   body.appendChild(checkSection);
 
   const footer = document.createElement('div');

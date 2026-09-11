@@ -10,7 +10,8 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win",
-    "dist:portable": "electron-builder --win portable"
+    "dist:portable": "electron-builder --win portable",
+    "dist:publish": "electron-builder --win --publish always"
   },
   "devDependencies": {
     "electron": "^33.0.0",
@@ -21,10 +22,17 @@
     "productName": "Paratek",
     "files": [
       "**/*",
-      "!data/**"
+      "!data/**",
+      "!.git/**",
+      "!*.pem"
     ],
     "directories": {
       "output": "dist"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "berkcangs20-pixel",
+      "repo": "paratek"
     },
     "win": {
       "target": [
@@ -39,5 +47,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     }
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
   }
 }
