@@ -1,0 +1,12 @@
+node_modules/
+dist/
+
+# Real business data, password hash and license activation — never publish these.
+data/
+*.pem
+private_key*
+license.json
+
+npm-debug.log*
+.DS_Store
+Thumbs.db

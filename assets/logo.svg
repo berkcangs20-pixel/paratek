@@ -1,0 +1,36 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#232323"/>
+      <stop offset="1" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="green" x1="52" y1="88" x2="184" y2="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5cd394"/>
+      <stop offset="1" stop-color="#2c8a56"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="138" y1="44" x2="218" y2="124" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f2cd7a"/>
+      <stop offset="1" stop-color="#c9932f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background badge -->
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="url(#bg)"/>
+  <rect x="2" y="2" width="252" height="252" rx="56" fill="none" stroke="#3fae6e" stroke-opacity="0.28" stroke-width="2.5"/>
+
+  <!-- wallet body -->
+  <rect x="52" y="96" width="136" height="102" rx="22" fill="url(#green)"/>
+  <rect x="52" y="96" width="136" height="30" rx="22" fill="#000000" fill-opacity="0.12"/>
+  <rect x="150" y="130" width="30" height="38" rx="9" fill="#0d2e1c" fill-opacity="0.55"/>
+
+  <!-- growth bars on wallet face -->
+  <rect x="68" y="160" width="14" height="22" rx="4" fill="#ffffff" fill-opacity="0.55"/>
+  <rect x="87" y="146" width="14" height="36" rx="4" fill="#ffffff" fill-opacity="0.68"/>
+  <rect x="106" y="130" width="14" height="52" rx="4" fill="#ffffff" fill-opacity="0.82"/>
+
+  <!-- coin -->
+  <circle cx="180" cy="82" r="42" fill="url(#gold)"/>
+  <circle cx="180" cy="82" r="42" fill="none" stroke="#8a611f" stroke-opacity="0.35" stroke-width="3"/>
+  <circle cx="180" cy="82" r="29" fill="none" stroke="#8a611f" stroke-opacity="0.3" stroke-width="3"/>
+  <path d="M162,64 A34,34 0 0 1 200,72" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="6" stroke-linecap="round"/>
+</svg>

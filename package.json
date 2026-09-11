@@ -1,0 +1,43 @@
+{
+  "name": "paratek",
+  "productName": "Paratek",
+  "version": "1.0.0",
+  "description": "Paratek - Cari Hesap, Kasa, Banka ve Hatirlatma Takip Programi",
+  "main": "main.js",
+  "author": "Furkan",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.paratek.app",
+    "productName": "Paratek",
+    "files": [
+      "**/*",
+      "!data/**"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
