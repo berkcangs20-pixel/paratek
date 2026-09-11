@@ -216,7 +216,9 @@ ipcMain.handle('downloadUpdate', async () => {
 });
 
 ipcMain.handle('installUpdate', () => {
-  autoUpdater.quitAndInstall();
+  // isSilent=true: kurulum sihirbazını göstermeden arka planda kur.
+  // isForceRunAfter=true: kurulum bitince programı otomatik yeniden aç.
+  autoUpdater.quitAndInstall(true, true);
 });
 
 autoUpdater.on('download-progress', (progress) => {
